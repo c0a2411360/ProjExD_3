@@ -172,21 +172,22 @@ class Explosion:
         爆発の設定
         """
         self.img = pg.image.load(f"fig/explosion.gif")  # 爆弾Surface
-        self.img2 = pg.transform.flip(img,True,True)
+        self.img2 = pg.transform.flip(self.img,True,True)
         self.imgs = [self.img,self.img2]
         self.rct = self.imgs[0].get_rect()  # Rect
         self.rct.center = bomb.rct.center
-        self.life = 15
+        self.life = 20
 
-    def update(self):
+    def update(self,screen:pg.Surface):
         """
         経過時間が過ぎたらリストを交互に切り替える
         """
         self.life -= 1
         if self.life > 0:
-            self.a = self.imgs[0]
-            self.imgs[0] = self.imgs[1]
-            self.img[1] = self.a
+            img = self.imgs[self.life % 2]
+            screen.blit(img, self.rct)
+            return True
+        return False
 
 
 def main():
@@ -231,8 +232,8 @@ def main():
             for i, beam in enumerate(beams):
                 if beam is not None and beam.rct.colliderect(bomb.rct):
                     # ビームが爆弾に当たったらビームと爆弾を消す
-                    explosion = Explosion()
-                    explosions.append(explosion(bomb))
+                    explosion = Explosion(bomb)
+                    explosions.append(explosion)
                     beams[i] = None
                     bombs[b] = None
                     bird.change_img(6, screen)
@@ -249,8 +250,8 @@ def main():
             beam.update(screen)   
         for bomb in bombs:
             bomb.update(screen)
-        for explosions in explosion:
-            explosion.update()
+        for explosion in explosions:
+            explosion.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
