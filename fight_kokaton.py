@@ -196,7 +196,7 @@ def main():
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
     # bomb = Bomb((255, 0, 0), 10)
-    # bombs = []
+    # bombs = []  # 複数の爆弾を収納する空リスト
     # for _ in range(NUM_OF_BOMBS):
     #     bomb = Bomb((255, 0, 0), 10)
     #     bombs.append(bomb)
