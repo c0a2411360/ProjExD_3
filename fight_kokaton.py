@@ -1,3 +1,4 @@
+import math
 import os
 import random
 import sys
@@ -73,6 +74,7 @@ class Bird:
         引数2 screen：画面Surface
         """
         sum_mv = [0, 0]
+        self.dire = (+5,0)
         for k, mv in __class__.delta.items():
             if key_lst[k]:
                 sum_mv[0] += mv[0]
@@ -83,6 +85,8 @@ class Bird:
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self.img = __class__.imgs[tuple(sum_mv)]
         screen.blit(self.img, self.rct)
+        if not (sum_mv[0] == 0 and sum_mv[1] == 0):
+            self.dire = tuple(sum_mv)
 
 
 class Beam:
@@ -95,10 +99,14 @@ class Beam:
         引数 bird：ビームを放つこうかとん（Birdインスタンス）
         """
         self.img = pg.image.load(f"fig/beam.png")  # Surface
+        vx, vy = bird.dire
+        muki1 = math.atan2(-vy, vx)
+        muki2 = math.degrees(muki1)
+        self.img = pg.transform.rotozoom(self.img,muki2,1)
         self.rct = self.img.get_rect()  # Rect
-        self.rct.centery = bird.rct.centery  # ビームの中心座標はこうかとんの中心座標
-        self.rct.left = bird.rct.right
-        self.vx, self.vy = +5, 0
+        self.rct.centery = bird.rct.centery + bird.rct.height*(vy/5)  # ビームの中心座標はこうかとんの中心座標
+        self.rct.centerx = bird.rct.centerx + bird.rct.width*(vx/5)
+        # self.rct.left = bird.rct.right
 
     def update(self, screen: pg.Surface):
         """
